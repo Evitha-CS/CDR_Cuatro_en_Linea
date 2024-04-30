@@ -11,6 +11,8 @@
 #include <unistd.h> 
 #include <iostream>
 #include <sys/wait.h>
+#include <cstdlib> // Para generar números aleatorios
+#include <ctime>   // Para la semilla del generador de números aleatorios
 
 using namespace std;
 //
@@ -25,6 +27,14 @@ void jugar(int socket_cliente, struct sockaddr_in direccionCliente) {
     inet_ntop(AF_INET, &(direccionCliente.sin_addr), ip, INET_ADDRSTRLEN);
     //
     cout << "[" << ip << ":" << ntohs(direccionCliente.sin_port) << "] Nuevo jugador." << endl;
+
+    // Generar un número aleatorio para decidir quién comienza
+    srand(time(NULL)); // Inicializar la semilla
+    int primer_turno = rand() % 2; // 0 para el servidor, 1 para el cliente
+
+    // Envía al cliente quién comienza primero (0 para servidor, 1 para cliente)
+    send(socket_cliente, &primer_turno, sizeof(int), 0);
+
     
     //
     while ((n_bytes = recv(socket_cliente, buffer, 1024, 0))) {
