@@ -24,6 +24,7 @@ public:
     }
 
     void mostrarTablero(int socket_cliente) {
+        std::cerr << "Ahora voy a enviar el tablero" << std::endl;
         std::string tablero_str = toString();
         size_t tablero_size = tablero_str.length();
         send(socket_cliente, &tablero_size, sizeof(tablero_size), 0);
@@ -59,6 +60,12 @@ public:
     }
 };
 
+void enviarMensaje(int socket_cliente, const std::string& mensaje) {
+        size_t mensaje_size = mensaje.length();
+        send(socket_cliente, &mensaje_size, sizeof(mensaje_size), 0);
+        send(socket_cliente, mensaje.c_str(), mensaje_size, 0);
+    }
+
 int main() {
     int socket_servidor = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_servidor == -1) {
@@ -93,21 +100,29 @@ int main() {
 
     std::cout << "Cliente conectado" << std::endl;
 
+    
+
     Tablero tablero;
     srand(time(NULL));
 
     while (true) {
-        
 
+        enviarMensaje(socket_cliente, "Hola, cliente");
+        tablero.mostrarTablero(socket_cliente);
+        // Esperar y recibir la columna del cliente
         int columna_cliente;
         int n_bytes = recv(socket_cliente, &columna_cliente, sizeof(columna_cliente), 0);
+        std::cout << "El servidor recibió: " << columna_cliente << " del cliente. De tamaño" << sizeof(columna_cliente) << std::endl;
+        std::cout << "n_bytes es: " << n_bytes << std::endl;
         if (n_bytes <= 0) {
             std::cerr << "Error al recibir datos del cliente" << std::endl;
             break;
         }
 
+        // Mostrar el tablero después de recibir la columna del cliente
         tablero.mostrarTablero(socket_cliente);
 
+        // Procesar la jugada del cliente
         tablero.agregarFicha(columna_cliente - 1, 'C');
         if (tablero.verificarGanador('C')) {
             tablero.mostrarTablero(socket_cliente);
@@ -115,6 +130,7 @@ int main() {
             break;
         }
 
+        // Realizar la jugada del servidor y enviar el tablero actualizado
         int columna_servidor = rand() % 7 + 1;
         tablero.agregarFicha(columna_servidor - 1, 'S');
         std::string tablero_str = tablero.toString();
