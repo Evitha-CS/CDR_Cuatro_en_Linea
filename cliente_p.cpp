@@ -84,8 +84,7 @@ public:
         int estado = mensaje[42] - '0'; // El último carácter es el estado del juego
 
         tablero.fromString(matriz);
-        tablero.mostrarTablero();
-
+        
         if (estado == 1) {
             std::cout << "¡Has ganado!" << std::endl;
             close(socket_cliente);
@@ -110,6 +109,7 @@ public:
         if (!turno_cliente) {
             std::cout << "El servidor comienza el juego. Esperando jugada...\n";
             recibirMatrizYEstado();
+            turno_cliente = true;
         } else {
             std::cout << "Comienzas tú.\n";
         }
@@ -124,6 +124,7 @@ public:
         recibirTurnoInicial();
         while (true) {
             if (turno_cliente) {
+                tablero.mostrarTablero();
                 std::cout << "\nIngresa la columna (1-7): ";
                 int columna;
                 std::cin >> columna;

@@ -87,10 +87,11 @@ public:
     }
 };
 
-void elegirTurno(int socket_cliente) {
+int primerTurno(int socket_cliente) {
     srand(time(NULL));
-    int primer_turno = rand() % 2;
+    int primer_turno = rand() % 2; // 0 para el servidor, 1 para el cliente
     send(socket_cliente, &primer_turno, sizeof(int), 0);
+    return primer_turno;
 }
 
 void enviarMatrizYEstado(int socket_cliente, const Tablero &tablero, int estado) {
@@ -104,14 +105,26 @@ void jugar(int socket_cliente, struct sockaddr_in direccionCliente) {
     memset(buffer, '\0', sizeof(char) * 1024);
 
     Tablero tablero;
-    int turno = 0; // 0 para el servidor, 1 para el cliente
+
     char ip[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(direccionCliente.sin_addr), ip, INET_ADDRSTRLEN);
     std::cout << "[" << ip << ":" << ntohs(direccionCliente.sin_port) << "] Nuevo jugador." << std::endl;
 
-    elegirTurno(socket_cliente);
-    //recv(socket_cliente, &turno, sizeof(turno), 0);
-    enviarMatrizYEstado(socket_cliente, tablero, 0);
+    int turno = primerTurno(socket_cliente); // Obtener el primer turno
+    if (turno == 0) { // Si el servidor tiene el primer turno
+        std::cout << "El servidor comienza el juego.\n";
+        srand(time(NULL));
+        int columna;
+        do {
+            columna = rand() % 7;
+        } while (tablero.getFicha(0, columna) != ' ');
+
+        tablero.agregarFicha(columna, 'S');
+        enviarMatrizYEstado(socket_cliente, tablero, 0); // Enviar la matriz y estado después de hacer una jugada
+        turno = 1; // Cambiar el turno al cliente
+    } else {
+        enviarMatrizYEstado(socket_cliente, tablero, 0); // Enviar la matriz y estado si el cliente tiene el primer turno
+    }
 
     while (true) {
         if (turno == 1) {
