@@ -86,10 +86,12 @@ public:
         tablero.fromString(matriz);
         
         if (estado == 1) {
+            system("clear");
             std::cout << "¡Has ganado!" << std::endl;
             close(socket_cliente);
             exit(EXIT_SUCCESS);
         } else if (estado == 2) {
+            system("clear");
             std::cout << "¡Has perdido!" << std::endl;
             close(socket_cliente);
             exit(EXIT_SUCCESS);
@@ -108,10 +110,14 @@ public:
         turno_cliente = (turno_inicial == 1);
         if (!turno_cliente) {
             std::cout << "El servidor comienza el juego. Esperando jugada...\n";
+            sleep(2);
+            system("clear");
             recibirMatrizYEstado();
             turno_cliente = true;
         } else {
             std::cout << "Comienzas tú.\n";
+            sleep(2);
+            system("clear");
         }
     }
 
@@ -134,8 +140,11 @@ public:
                 enviarColumna(columna);
                 turno_cliente = false; // Esperar la jugada del servidor
             } else {
+                std::cout << "Es el turno del servidor.\n";
+                sleep(1);
                 recibirMatrizYEstado();
                 turno_cliente = true; // Ahora es el turno del cliente
+                system("clear");
             }
         }
     }

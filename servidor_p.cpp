@@ -112,7 +112,7 @@ void jugar(int socket_cliente, struct sockaddr_in direccionCliente) {
 
     int turno = primerTurno(socket_cliente); // Obtener el primer turno
     if (turno == 0) { // Si el servidor tiene el primer turno
-        std::cout << "El servidor comienza el juego.\n";
+        std::cout << "El servidor comienza el juego con el cliente " << "[" << ip << ":" << ntohs(direccionCliente.sin_port) << "]" << std::endl;
         srand(time(NULL));
         int columna;
         do {
@@ -140,7 +140,7 @@ void jugar(int socket_cliente, struct sockaddr_in direccionCliente) {
 
             if (tablero.verificarGanador('C')) {
                 enviarMatrizYEstado(socket_cliente, tablero, 1);
-                std::cout << "El cliente ha ganado.\n";
+                std::cout << "[" << ip << ":" << ntohs(direccionCliente.sin_port) <<  "] El cliente ha ganado." << std::endl;
                 close(socket_cliente);
                 exit(EXIT_SUCCESS);
             }
