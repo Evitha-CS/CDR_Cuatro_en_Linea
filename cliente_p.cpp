@@ -101,7 +101,7 @@ public:
     void recibirTurnoInicial() {
         int turno_inicial;
         int n_bytes = recv(socket_cliente, &turno_inicial, sizeof(turno_inicial), 0);
-        std::cout << turno_inicial<<"Turno inicial"<<std::endl;
+        
         if (n_bytes <= 0) {
             std::cerr << "Error recibiendo el turno inicial del servidor\n";
             exit(EXIT_FAILURE);
@@ -116,6 +116,7 @@ public:
             turno_cliente = true;
         } else {
             std::cout << "Comienzas tú.\n";
+            recibirMatrizYEstado();
             sleep(2);
             system("clear");
         }
@@ -136,13 +137,14 @@ public:
                 std::cin >> columna;
                 columna--;
 
-                system("clear");
                 enviarColumna(columna);
                 turno_cliente = false; // Esperar la jugada del servidor
+                system("clear");
             } else {
                 std::cout << "Es el turno del servidor.\n";
                 sleep(1);
                 recibirMatrizYEstado();
+                tablero.mostrarTablero();
                 turno_cliente = true; // Ahora es el turno del cliente
                 system("clear");
             }

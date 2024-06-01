@@ -156,7 +156,7 @@ void jugar(int socket_cliente, struct sockaddr_in direccionCliente) {
 
             if (tablero.verificarGanador('S')) {
                 enviarMatrizYEstado(socket_cliente, tablero, 2);
-                std::cout << "El servidor ha ganado.\n";
+                std::cout << "El servidor ha ganado contra el cliente " << "[" << ip << ":" << ntohs(direccionCliente.sin_port) << "]" << std::endl;
                 close(socket_cliente);
                 exit(EXIT_SUCCESS);
             }
