@@ -17,6 +17,6 @@ Repositorio enfocado para gestionar las versiones del código de la Tarea 1: "Cu
 
 1. Ejecute `./servidor <numero_de_puerto>` para ejecutar el código del servidor.
 2. Ejecute `./cliente` para ejecurtar el código del servidor.
-   - 2.1. Ingrese la dirección IP del servidor a conectarse.
-   - 2.2. Ingrese el puerto del servidor a conectarse.
+   - Ingrese la dirección IP del servidor a conectarse.
+   - Ingrese el puerto del servidor a conectarse.
      
